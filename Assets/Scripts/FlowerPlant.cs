@@ -30,15 +30,15 @@ public class FlowerPlant : MonoBehaviour
             // PANGGIL SCRIPT NATALIO (GameManager)
             // Fungsinya: Tambah skor setiap kali bunga tumbuh
             // Kita pakai 'try-catch' atau pengecekan null biar tidak error kalau script Natalio belum ada
-            // GameManager gm = FindObjectOfType<GameManager>();
-            // if (gm != null)
-            //{
-            //    gm.AddScore(); // Pastikan di script Natalio fungsi AddScore() bersifat 'public'
-            //}
-            //else
-            //{
-            //    Debug.Log("Bunga Tumbuh! (GameManager belum ditemukan, skor tidak bertambah)");
-            //}
+            GameManager gm = FindObjectOfType<GameManager>();
+            if (gm != null)
+            {
+                gm.AddScore(); // Pastikan di script Natalio fungsi AddScore() bersifat 'public'
+            }
+            else
+            {
+                Debug.Log("Bunga Tumbuh! (GameManager belum ditemukan, skor tidak bertambah)");
+            }
         }
     }
 
