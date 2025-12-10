@@ -3,13 +3,42 @@ using UnityEngine;
 public class FlowerPlant : MonoBehaviour
 {
     [Header("Daftar Model Bunga")]
+    // Urutan: [0]Layu, [1]Tumbuh, [2]Kuncup, [3]Mekar
     public GameObject[] flowerStages; 
     
+    [Header("Pengaturan Waktu")]
+    public float durasiLayu = 10.0f; 
+    private float timerMenujuLayu;
+
     private int currentStageIndex = 0;
 
     void Start()
     {
+        timerMenujuLayu = durasiLayu;
         UpdateFlowerVisuals();
+    }
+
+    void Update()
+    {
+        // --- SIKLUS ABADI ---
+        // Bunga akan SELALU menghitung mundur untuk layu, 
+        // BAHKAN SAAT SUDAH MEKAR (Stage terakhir).
+        // Ini supaya pemain bisa menyiramnya lagi nanti untuk dapat poin lagi.
+        if (currentStageIndex > 0) 
+        {
+            timerMenujuLayu -= Time.deltaTime;
+
+            if (timerMenujuLayu <= 0)
+            {
+                MenjadiLayu(); 
+            }
+        }
+        
+        // Fitur Test Spasi
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            Siram();
+        }
     }
 
     public void Siram()
@@ -17,28 +46,34 @@ public class FlowerPlant : MonoBehaviour
         // Cek apakah bunga belum mekar maksimal?
         if (currentStageIndex < flowerStages.Length - 1)
         {
-            // 1. Naikkan level bunga
+            // 1. Naikkan level
             currentStageIndex++; 
             
-            // 2. Perbarui tampilan visual
+            // 2. Reset Timer
+            timerMenujuLayu = durasiLayu;
+
+            // 3. Update Visual
             UpdateFlowerVisuals();
 
-            // 3. LOGIKA SKOR (DIPERBAIKI)
-            // Kita hanya nambah skor KALAU bunga sudah sampai tahap terakhir (Mekar)
-            // Supaya 1 Bunga = 1 Skor.
-            if (currentStageIndex == flowerStages.Length - 1)
+            // 4. --- TAMBAH SKOR +3 SETIAP FASE ---
+            GameManager gm = FindFirstObjectByType<GameManager>();
+            if (gm != null)
             {
-                GameManager gm = FindFirstObjectByType<GameManager>(); // Pakai FindFirstObjectByType utk Unity 6
-                if (gm != null)
-                {
-                    // PERBAIKAN NAMA: Dari AddScore() jadi TambahSkor()
-                    gm.TambahSkor(); 
-                }
-                else
-                {
-                    Debug.Log("Bunga Mekar! (Tapi GameManager tidak ditemukan)");
-                }
+                // Kita kirim angka 3 ke GameManager
+                gm.TambahSkor(3); 
+                Debug.Log("Bunga Tumbuh! +3 Poin");
             }
+        }
+    }
+
+    void MenjadiLayu()
+    {
+        if (currentStageIndex > 0)
+        {
+            currentStageIndex--; // Turun satu level
+            timerMenujuLayu = durasiLayu; // Reset timer
+            UpdateFlowerVisuals();
+            Debug.Log("Bunga layu turun satu level.");
         }
     }
 
@@ -50,15 +85,6 @@ public class FlowerPlant : MonoBehaviour
                 flowerStages[i].SetActive(true);
             else
                 flowerStages[i].SetActive(false);
-        }
-    }
-    
-    // Fitur Test Spasi (Tetap simpan buat ngetes gampang)
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Siram();
         }
     }
 }

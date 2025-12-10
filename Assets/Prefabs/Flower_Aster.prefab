@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1121458826261067912}
   - component: {fileID: 4054155903213680024}
   - component: {fileID: 8245428239573851704}
+  - component: {fileID: 3574345215214618537}
   m_Layer: 0
   m_Name: Flower_Aster
   m_TagString: Flower
@@ -28,8 +29,8 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3598074372911917512}
   - {fileID: 8736421630901432212}
@@ -151,6 +152,28 @@ MonoBehaviour:
   - {fileID: 8247728653561722158}
   - {fileID: 3809716361916600811}
   - {fileID: 5426618201350202794}
+  durasiLayu: 30
+--- !u!65 &3574345215214618537
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7962914983271408041}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.5, y: 2, z: 1.5}
+  m_Center: {x: 0, y: 1, z: 0}
 --- !u!1001 &3919350936872717859
 PrefabInstance:
   m_ObjectHideFlags: 0

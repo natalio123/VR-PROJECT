@@ -1,16 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.SceneManagement; // Wajib untuk pindah scene
+using UnityEngine.SceneManagement;
+using TMPro; 
 
 public class GameManager : MonoBehaviour
 {
     [Header("Pengaturan Game")]
-    public float waktuTotal = 420f; // 7 Menit (dalam detik)
-    public int targetBunga = 6;     // Jumlah total bunga di level
+    public float waktuTotal = 420f; 
+    public int targetSkorMenang = 100; // Karena skor sekarang puluhan/ratusan, targetnya kita naikkan
 
     [Header("UI")]
-    public Text textWaktu; // Drag Text UI untuk Timer
-    public Text textSkor;  // Drag Text UI untuk Skor
+    public TMP_Text textWaktu; 
+    public TMP_Text textSkor;  
 
     private float sisaWaktu;
     private int skorSaatIni = 0;
@@ -26,7 +27,6 @@ public class GameManager : MonoBehaviour
     {
         if (gameSelesai) return;
 
-        // Hitung mundur waktu
         sisaWaktu -= Time.deltaTime;
 
         if (sisaWaktu <= 0)
@@ -38,38 +38,36 @@ public class GameManager : MonoBehaviour
         UpdateUI();
     }
 
-    public void TambahSkor()
+    // --- PERUBAHAN PENTING ---
+    // Fungsi sekarang menerima angka 'nilai'. Jadi bisa nambah +1, +3, atau +10.
+    public void TambahSkor(int nilai)
     {
-        skorSaatIni++;
+        skorSaatIni += nilai;
         UpdateUI();
     }
 
     void UpdateUI()
     {
-        // Format waktu jadi Menit:Detik (Contoh 06:30)
         int menit = Mathf.FloorToInt(sisaWaktu / 60);
         int detik = Mathf.FloorToInt(sisaWaktu % 60);
 
         if (textWaktu != null)
             textWaktu.text = string.Format("{0:00}:{1:00}", menit, detik);
 
+        // --- UI HANYA ANGKA ---
+        // Tidak ada lagi "/6". Hanya angka skor mentah.
         if (textSkor != null)
-            textSkor.text = skorSaatIni + "/" + targetBunga;
+            textSkor.text = skorSaatIni.ToString();
     }
 
     void AkhiriGame()
     {
         gameSelesai = true;
-
-        // --- TAMBAHAN BARU: SIMPAN SKOR ---
-        // Kita titip nilai skor ke memori HP dengan kata kunci "SkorAkhir"
         PlayerPrefs.SetInt("SkorAkhir", skorSaatIni);
         PlayerPrefs.Save();
-        // ----------------------------------
 
-        float persentase = (float)skorSaatIni / targetBunga * 100f;
-
-        if (persentase >= 50f)
+        // Menang jika skor mencapai target angka (bukan jumlah bunga lagi)
+        if (skorSaatIni >= targetSkorMenang)
         {
             SceneManager.LoadScene("Scene_Ending_Lulus");
         }
