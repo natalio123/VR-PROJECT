@@ -3,63 +3,57 @@ using UnityEngine;
 public class FlowerPlant : MonoBehaviour
 {
     [Header("Daftar Model Bunga")]
-    // Ini adalah 'laci' untuk menyimpan 4 model bunga kamu (Layu, Tumbuh, Kuncup, Mekar)
     public GameObject[] flowerStages; 
     
-    // Variabel untuk melacak tahap keberapa sekarang (0 = Layu, 3 = Mekar)
     private int currentStageIndex = 0;
 
     void Start()
     {
-        // Saat game mulai, pastikan tampilannya benar (hanya yang layu yang muncul)
         UpdateFlowerVisuals();
     }
 
-    // Fungsi ini akan dipanggil oleh "Air" nanti (Tugas Jenn di Hari 5)
     public void Siram()
     {
-        // Cek apakah bunga belum mekar maksimal? (Index 3 adalah batas akhir)
+        // Cek apakah bunga belum mekar maksimal?
         if (currentStageIndex < flowerStages.Length - 1)
         {
-            // Naikkan level bunga
+            // 1. Naikkan level bunga
             currentStageIndex++; 
             
-            // Perbarui tampilan model 3D
+            // 2. Perbarui tampilan visual
             UpdateFlowerVisuals();
 
-            // PANGGIL SCRIPT NATALIO (GameManager)
-            // Fungsinya: Tambah skor setiap kali bunga tumbuh
-            // Kita pakai 'try-catch' atau pengecekan null biar tidak error kalau script Natalio belum ada
-            GameManager gm = FindObjectOfType<GameManager>();
-            if (gm != null)
+            // 3. LOGIKA SKOR (DIPERBAIKI)
+            // Kita hanya nambah skor KALAU bunga sudah sampai tahap terakhir (Mekar)
+            // Supaya 1 Bunga = 1 Skor.
+            if (currentStageIndex == flowerStages.Length - 1)
             {
-                gm.AddScore(); // Pastikan di script Natalio fungsi AddScore() bersifat 'public'
-            }
-            else
-            {
-                Debug.Log("Bunga Tumbuh! (GameManager belum ditemukan, skor tidak bertambah)");
+                GameManager gm = FindFirstObjectByType<GameManager>(); // Pakai FindFirstObjectByType utk Unity 6
+                if (gm != null)
+                {
+                    // PERBAIKAN NAMA: Dari AddScore() jadi TambahSkor()
+                    gm.TambahSkor(); 
+                }
+                else
+                {
+                    Debug.Log("Bunga Mekar! (Tapi GameManager tidak ditemukan)");
+                }
             }
         }
     }
 
-    // Fungsi untuk mengatur mana yang muncul/hilang
     void UpdateFlowerVisuals()
     {
         for (int i = 0; i < flowerStages.Length; i++)
         {
             if (i == currentStageIndex)
-            {
-                flowerStages[i].SetActive(true); // Munculkan tahap ini
-            }
+                flowerStages[i].SetActive(true);
             else
-            {
-                flowerStages[i].SetActive(false); // Sembunyikan tahap lain
-            }
+                flowerStages[i].SetActive(false);
         }
     }
     
-    // --- FITUR TESTING (HAPUS NANTI) ---
-    // Gunakan Spasi untuk menyiram bunga secara manual buat ngetes
+    // Fitur Test Spasi (Tetap simpan buat ngetes gampang)
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
